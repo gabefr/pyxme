@@ -384,6 +384,17 @@ PRESETS = {
     },
 }
 
+def constrain_image_size(img, max_dimension=2048):
+    """Constrain image to max dimension while preserving aspect ratio"""
+    w, h = img.size
+    if w <= max_dimension and h <= max_dimension:
+        return img
+    
+    scale = max_dimension / max(w, h)
+    new_size = (int(w * scale), int(h * scale))
+    print(f"[RESIZE] {w}x{h} -> {new_size[0]}x{new_size[1]} (max: {max_dimension}px)")
+    return img.resize(new_size, Image.LANCZOS)
+
 
 def apply_edge_enhancement(img):
     """Enhance edges for crisper pixel art"""
@@ -422,23 +433,25 @@ def adjust_saturation(img, factor):
     return enhancer.enhance(factor)
 
 
-def apply_palette(img, palette_name):
-    """Apply a predefined color palette to the image using optimized vectorized operations"""
+def apply_palette(img, palette_name, chunk_size=50000):
+    """Apply a predefined color palette using chunked processing for memory efficiency"""
     palette = np.array(COLOR_PALETTES[palette_name], dtype=np.float32)
     img_array = np.array(img, dtype=np.float32)
     h, w = img_array.shape[:2]
-
-    # Reshape image to (h*w, 3) for vectorized processing
+    
     pixels = img_array.reshape(-1, 3)
-
-    # Use scipy's cdist for optimized distance calculation if available
-    distances = cdist(pixels, palette, metric="sqeuclidean")
-    closest_indices = np.argmin(distances, axis=1)
-
-    # Map pixels to closest palette colors
-    result = palette[closest_indices].reshape(h, w, 3)
-
-    return Image.fromarray(result.astype("uint8"))
+    total_pixels = len(pixels)
+    result = np.zeros_like(pixels)
+    
+    # Process in chunks to avoid memory spikes
+    for i in range(0, total_pixels, chunk_size):
+        end = min(i + chunk_size, total_pixels)
+        chunk = pixels[i:end]
+        distances = cdist(chunk, palette, metric="sqeuclidean")
+        closest_indices = np.argmin(distances, axis=1)
+        result[i:end] = palette[closest_indices]
+    
+    return Image.fromarray(result.reshape(h, w, 3).astype("uint8"))
 
 
 def quantize_colors(img, colors, dither=False):
@@ -474,11 +487,15 @@ def process_image(
     edge_enhance,
     clean_palette,
     palette_name,
+    max_size,
 ):
     """Process an image to look like pixel art"""
     try:
         img = Image.open(input_path)
         print(f"[LOAD] {input_path} ({img.size[0]}x{img.size[1]})")
+
+        # Constrain image size to prevent memory issues
+        img = constrain_image_size(img, max_dimension=max_size)
 
         if img.mode != "RGB":
             img = img.convert("RGB")
@@ -625,6 +642,13 @@ examples:
     parser.add_argument(
         "--clean-palette", action="store_true", help="aggressive palette snapping"
     )
+    parser.add_argument(
+        "--max-size",
+        type=int,
+        default=2048,
+        help="maximum image dimension in pixels (default: 2048, use 1024 for very large images)",
+    )
+
 
     args = parser.parse_args()
 
@@ -668,6 +692,7 @@ examples:
         args.edge_enhance,
         args.clean_palette,
         palette_name,
+        args.max_size
     )
 
 
