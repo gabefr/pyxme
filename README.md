@@ -27,12 +27,12 @@ pip install .
 
 ```bash
 # Use default preset
-python pyxme.py input.jpg output.png
+pyxme input.jpg output.png
 
 # Try different presets
-python pyxme.py input.jpg output.png --preset nes
-python pyxme.py input.jpg output.png --preset gameboy
-python pyxme.py input.jpg output.png --preset pico8
+pyxme input.jpg output.png --preset nes
+pyxme input.jpg output.png --preset gameboy
+pyxme input.jpg output.png --preset pico8
 ```
 
 ## Usage
@@ -40,7 +40,7 @@ python pyxme.py input.jpg output.png --preset pico8
 ### Basic Command
 
 ```bash
-python pyxme.py <input> <output> [options]
+pyxme <input> <output> [options]
 ```
 
 ### Presets
@@ -48,7 +48,7 @@ python pyxme.py <input> <output> [options]
 Use `--list-presets` to see all available configurations:
 
 ```bash
-python pyxme.py --list-presets
+pyxme --list-presets
 ```
 
 Available presets:
@@ -101,15 +101,15 @@ Available presets:
 Use `--list-palettes` to see all authentic retro palettes:
 
 ```bash
-python pyxme.py --list-palettes
+pyxme --list-palettes
 ```
 
 Apply a specific palette:
 
 ```bash
-python pyxme.py input.jpg output.png --palette nes
-python pyxme.py input.jpg output.png --palette commodore64
-python pyxme.py input.jpg output.png --palette gameboy
+pyxme input.jpg output.png --palette nes
+pyxme input.jpg output.png --palette commodore64
+pyxme input.jpg output.png --palette gameboy
 ```
 
 Available palettes:
@@ -161,7 +161,7 @@ Original photo by [Y K](https://unsplash.com/@yokeboy?utm_source=unsplash&utm_me
 Override preset values with custom parameters:
 
 ```bash
-python pyxme.py input.jpg output.png \
+pyxme input.jpg output.png \
   --preset retro \
   --pixel-size 20 \
   --colors 16 \
@@ -190,37 +190,37 @@ python pyxme.py input.jpg output.png \
 
 ### NES Style
 ```bash
-python pyxme.py photo.jpg nes_art.png --preset nes --dither
+pyxme photo.jpg nes_art.png --preset nes --dither
 ```
 
 ### Game Boy Green Screen
 ```bash
-python pyxme.py photo.jpg gameboy.png --preset gameboy
+pyxme photo.jpg gameboy.png --preset gameboy
 ```
 
 ### PICO-8 Fantasy Console
 ```bash
-python pyxme.py photo.jpg pico8.png --preset pico8
+pyxme photo.jpg pico8.png --preset pico8
 ```
 
 ### Custom Heavy Pixelation
 ```bash
-python pyxme.py photo.jpg chunky.png -p 24 -c 8 --sharpen 3.0
+pyxme photo.jpg chunky.png -p 24 -c 8 --sharpen 3.0
 ```
 
 ### Preserve Fine Details
 ```bash
-python pyxme.py photo.jpg detailed.png -p 6 -c 64 --edge-enhance
+pyxme photo.jpg detailed.png -p 6 -c 64 --edge-enhance
 ```
 
 ### Synthwave Aesthetic
 ```bash
-python pyxme.py photo.jpg synthwave.png --preset apollo
+pyxme photo.jpg synthwave.png --preset apollo
 ```
 
 ### CGA with Dithering
 ```bash
-python pyxme.py photo.jpg cga_dither.png --palette cga --dither -p 16
+pyxme photo.jpg cga_dither.png --palette cga --dither -p 16
 ```
 
 
