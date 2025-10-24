@@ -13,9 +13,10 @@ dependencies = [
 [project.scripts]
 pyxme = "pyxme.main:main"
 
-[dependencies-group]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
     "ruff>=0.1.0",
 ]
 
@@ -25,3 +26,12 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["pyxme"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = ["-v", "--cov=pyxme", "--cov-report=term-missing"]
+
+[tool.coverage.run]
+source = ["pyxme"]
+omit = ["*/tests/*", "*/__pycache__/*"]
